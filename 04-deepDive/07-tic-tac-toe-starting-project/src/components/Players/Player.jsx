@@ -4,7 +4,6 @@ export default function Player({ defaultName, playerSymbol, ...props }) {
   const [isEditing, setIsEditing] = useState(false);
   const [playerName, setPlayerName] = useState(defaultName);
 
-  console.log(isEditing);
   const handleEditClick = (e) => {
     // Note when updating state based on the previous state you should NOT use the below method and instead pass a function
 
@@ -23,7 +22,7 @@ export default function Player({ defaultName, playerSymbol, ...props }) {
 
   let player;
   isEditing
-    ? (player = <input type="text" required placeholder={playerName} onChange={handleChange} />)
+    ? (player = <input type="text" required placeholder={playerName} onChange={handleChange} value={playerName} />)
     : (player = <span className="player-name">{playerName}</span>);
 
   return (
