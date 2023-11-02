@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-export default function Player({ defaultName, playerSymbol, isActive }) {
+export default function Player({ defaultName, playerSymbol, isActive, onChangeName }) {
   const [isEditing, setIsEditing] = useState(false);
   const [playerName, setPlayerName] = useState(defaultName);
 
-  const handleEditClick = (e) => {
+  const handleEditClick = () => {
     // Note when updating state based on the previous state you should NOT use the below method and instead pass a function
 
     // setIsEditing(!isEditing); // this is bad practice because it schedules a state update in the future but these scheduled updates are delayed and may lead to unexpected behavior
@@ -12,6 +12,9 @@ export default function Player({ defaultName, playerSymbol, isActive }) {
     // React recommended practice - this will automatically get the current state value and return the new state that you want to set
 
     setIsEditing((editing) => !editing); //by calling a function the state update isn't scheduled but immediately changed!!!!!!!!!
+    if (isEditing) {
+      onChangeName(playerSymbol, playerName);
+    }
   };
 
   const handleChange = (e) => {
