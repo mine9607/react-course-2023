@@ -1,36 +1,55 @@
-import { useState } from "react";
+// import { useState } from "react";
 import Input from "./Input";
 import { isEmail, isNotEmpty, hasMinLength } from "../util/validation";
-
+import { useInput } from "../hooks/useInput";
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const {
+    value: emailValue,
+    handleInputChange: handleEmailChange,
+    handleInputBlur: handleEmailBlur,
+    hasError: emailIsInvalid,
+  } = useInput("", (value) => isEmail(value) && isNotEmpty(value));
 
-  const [didEdit, setDidEdit] = useState({ email: false, password: false });
+  const {
+    value: passwordValue,
+    handleInputChange: handlePasswordChange,
+    handleInputBlur: handlePasswordBlur,
+    hasError: passwordInvalid,
+  } = useInput("", (value) => hasMinLength(value, 6));
 
-  const emailIsInvalid = didEdit.email && !isEmail(formData.email) && !isNotEmpty(formData.email);
-  const passwordInvalid = didEdit.password && !hasMinLength(formData.password, 6);
+  // -------moved functionality into custom useInput hook---------------
+  // const [formData, setFormData] = useState({
+  //   email: "",
+  //   password: "",
+  // });
+
+  // const [didEdit, setDidEdit] = useState({ email: false, password: false });
+
+  // const emailIsInvalid = didEdit.email && !isEmail(formData.email) && !isNotEmpty(formData.email);
+
+  // const passwordInvalid = didEdit.password && !hasMinLength(formData.password, 6);
+
+  // -------moved functionality into custom useInput hook---------------
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    console.log(formData);
-    setFormData({
-      email: "",
-      password: "",
-    });
-  }
+    if (emailIsInvalid || passwordInvalid) {
+      return;
+    }
 
-  function handleInputChange(identifier, value) {
-    setFormData((prevValues) => ({ ...prevValues, [identifier]: value }));
-    setDidEdit((prevEdit) => ({ ...prevEdit, [identifier]: false }));
+    console.log("Form submitted!", emailValue, passwordValue);
   }
+  //  -----------moved functionality into custom useInput hook---------------
+  // function handleInputChange(identifier, value) {
+  //   setFormData((prevValues) => ({ ...prevValues, [identifier]: value }));
+  //   setDidEdit((prevEdit) => ({ ...prevEdit, [identifier]: false }));
+  // }
 
-  function handleInputBlur(identifier) {
-    setDidEdit((prevEdit) => ({ ...prevEdit, [identifier]: true }));
-  }
+  // function handleInputBlur(identifier) {
+  //   setDidEdit((prevEdit) => ({ ...prevEdit, [identifier]: true }));
+  // }
+  // -----------moved functionality into custom useInput hook---------------
 
   // function handleEmailChange(event) {
   //   setFormData((prevValues) => ({ ...prevValues, enteredEmail: event.target.value }));
@@ -66,19 +85,19 @@ export default function Login() {
           id="email"
           name="email"
           type="email"
-          value={formData.email}
-          onChange={(event) => handleInputChange("email", event.target.value)}
-          onBlur={() => handleInputBlur("email")}
-          error={emailIsInvalid && "Please enter a valid email address."}
+          value={emailValue}
+          onChange={handleEmailChange}
+          onBlur={handleEmailBlur}
+          error={emailIsInvalid && "Please enter a valid email."}
         />
         <Input
           label="Password"
           id="password"
           name="password"
           type="password"
-          value={formData.password}
-          onChange={(event) => handleInputChange("password", event.target.value)}
-          onBlur={() => handleInputBlur("password")}
+          value={passwordValue}
+          onChange={handlePasswordChange}
+          onBlur={handlePasswordBlur}
           error={passwordInvalid && "Please enter a valid password."}
         />
       </div>
