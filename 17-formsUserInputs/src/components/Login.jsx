@@ -1,25 +1,25 @@
+import { useRef, useState } from "react";
 export default function Login() {
+  const [emailInvalid, setEmailInvalid] = useState(false);
+  const email = useRef();
+  const password = useRef();
+
   function handleSubmit(event) {
     event.preventDefault();
+    console.log(email.current.value);
+    console.log(password.current.value);
 
-    console.log("submitted");
-    console.log(event.target.email.value);
-    console.log(event.target.password.value);
-  }
+    const emailValid = email.current.value.includes("@");
 
-  const handleFetch = async () => {
-    try {
-      const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-      console.log(data);
-    } catch (error) {
-      console.log(error);
+    if (!emailValid) {
+      setEmailInvalid(true);
+      return;
     }
-  };
+    setEmailInvalid(false);
+    console.log("Sending an HTTP request...");
+    // programatically reset the form - best practice when using refs
+    event.target.reset();
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -28,20 +28,19 @@ export default function Login() {
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
-          <input id="email" type="email" name="email" />
+          <input id="email" type="email" name="email" ref={email} />
+          <div className="control-error">{emailInvalid && <p>Please enter a valid email.</p>}</div>
         </div>
 
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" />
+          <input id="password" type="password" name="password" ref={password} />
         </div>
       </div>
 
       <p className="form-actions">
         <button className="button button-flat">Reset</button>
-        <button className="button" onClick={handleFetch}>
-          Login
-        </button>
+        <button className="button">Login</button>
       </p>
     </form>
   );
